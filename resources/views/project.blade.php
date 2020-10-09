@@ -70,9 +70,9 @@
               <h5>Contact</h5>
               <h5>{{$project->data()['contact']}}</h5>
             </div>
-            <div style="float: right;" class="trainer-rank d-flex align-items-center f-right">
-              <a href="#" class="get-started-btn">Follow</a>
-            </div>
+            {{-- <div style="float: right;" class="trainer-rank d-flex align-items-center f-right">
+              <a href="{{route('follow.project',['id'=>$project->data()['userId']])}}" class="get-started-btn">Follow</a>
+            </div>  --}}
 
           </div>
         

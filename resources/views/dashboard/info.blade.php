@@ -125,7 +125,7 @@
                                 <label class="control-label"
                                 >Follower </label
                               >
-                              <a href="#" class="btn btn-fill btn-success btn-wd">{{$followers->size()}}</a>
+                              <a href="{{route('show.followers')}}" class="btn btn-fill btn-success btn-wd">{{$followers->size()}}</a>
                               
                       
                             </div>
@@ -139,7 +139,7 @@
                                 <label class="control-label"
                                 >Following </label
                               >
-                              <a href="#" class="btn btn-fill btn-success btn-wd">{{$followings->size()}}</a>
+                              <a href="{{route('show.followings')}}" class="btn btn-fill btn-success btn-wd">{{$followings->size()}}</a>
 
                               
                             </div>

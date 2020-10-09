@@ -149,7 +149,7 @@ class HomeController extends Controller
 		$project = $this->db->collection('ProjectDetail')->document($id)->snapshot();
 		// dd(Session::get('uid'));
 		// dd($project->id());
-
+ 
 		$comments = $this->db->collection('comments')->where('postId','==',$project->id())->documents();
 
 		// $user = $this->db->collection('backend_users')->where('userID','==',$comments->data()['commentFrom'])->documents();
@@ -174,11 +174,6 @@ class HomeController extends Controller
             //     dd($user[0]);
           	  
         	// }
-
-
-		
-
-		
 		return view('project')->with('project',$project)
 							  ->with('comments',$comments)
 							  ->with('users',$users);
@@ -206,36 +201,47 @@ class HomeController extends Controller
 
 	//---------------------all projects---------------
 	public function projects(){
-		$projects = $this->db->collection('ProjectDetail')->documents();
-		// dd(count((array)$projects));
+
+		// $followers = $this->db->collection('Followers')->where('followedBy','==',Session::get('uid'))->documents();	
+        // $followingPosts = array();
+
+		// foreach ($followers as  $follow) {
+		// 	if($follow->exists()){
+		// 		// dd($follow->data()['following']);
+		// 		$following = $follow->data()['following'];
+		// 		$followingPost =$this->db->collection('followingPostData')->document($follow->data()['following'])->collection($follow->data()['following'])->where('postForm','==',$follow->data()['following'])->documents();
+		// 		array_push($followingPosts,$followingPost);
+
+		// 	}
+		// }
+		// dd(Session::get('uid'));
+		// dd($following);
+		// $projects = array();
+		// foreach ($followingPosts[0] as $followingPost) {
+			
+		// 	$project = $this->db->collection('ProjectDetail')->document($followingPost->data()['postId'])->snapshot();
+			
+		// 	array_push($projects,$project);
+			
+		// }
 		// dd($projects);
 		$users = array();
+		$projects = $this->db->collection('ProjectDetail')->documents();
 
 			foreach($projects as $project) {
             	if($project->exists()){
                		$usr = $this->db->collection('backend_users')->document($project->data()['userId'])->snapshot();							
-					// $user = $usr->toString();
+					
 					array_push($users,$usr);
 					
 				}
 			}
-		$followers = $this->db->collection('Followers')->documents();	
 
-		$id = Session::get('uid');
-
-		// dd($followers);
-
-		// foreach ($users as  $user) {
-		// 	foreach ($followers as $follower) {
-		// 		if ($follower->data()['following'] == $user->id() && $follower->data()['followedBy'] == $id) {
-		// 			dd('matched');
-		// 		}
-		// 	}
-		// }
+	
 
 		return view('projects')->with('projects',$projects)
-							   ->with('users',$users)
-							   ->with('followers',$followers);
+							   ->with('users',$users);
+							   
 
 	}
 
@@ -299,12 +305,39 @@ class HomeController extends Controller
 	//-------------------following-----------
 	public function following(){
 
-		$projects = $this->db->collection('followingPostData')->documents();
-		// $projects = $this->db->collection('followingPostData')->document('2jIBLiJPs5Wq486ufxHYZu86HKy1')->collection('2jIBLiJPs5Wq486ufxHYZu86HKy1')->documents();
-		// ->collection()->documents()
+		$followers = $this->db->collection('Followers')->where('followedBy','==',Session::get('uid'))->documents();	
+        $followingPosts = array();
+
+		foreach ($followers as  $follow) {
+			if($follow->exists()){
+				// dd($follow->data()['following']);
+				$following = $follow->data()['following'];
+				$followingPost =$this->db->collection('followingPostData')->document($follow->data()['following'])->collection($follow->data()['following'])->where('postForm','==',$follow->data()['following'])->documents();
+				array_push($followingPosts,$followingPost);
+
+			}
+		}
+		$projects = array();
+		foreach ($followingPosts[0] as $followingPost) {
+			
+			$project = $this->db->collection('ProjectDetail')->document($followingPost->data()['postId'])->snapshot();
+			array_push($projects,$project);
+			
+		}
+		$users = array();
+
+			foreach($projects as $project) {
+            	if($project->exists()){
+               		$usr = $this->db->collection('backend_users')->document($project->data()['userId'])->snapshot();							
+					
+					array_push($users,$usr);
+					
+				}
+			}
 		
 		// dd($projects);
-		return view('following');
+		return view('following')->with('projects',$projects)
+								->with('users',$users);
 	}
 	
 	//----------------------add project------------
@@ -313,19 +346,47 @@ class HomeController extends Controller
 	}
 
 
-	public function followProject($id){
-		
-	}
 	public function followUser($id){
+		$timestamp = (int) round(now()->format('Uu') / pow(10, 6 - 3));
+		// dd($timestamp);
+		// dd($id);
+		//follow user
 		$follow =$this->db->collection('Followers')->newDocument();
 		$follow->set([
 			'followedBy'=>Session::get('uid'),
 			'following'=>$id,
 		]);
+		//get user posts
+		$projects = $this->db->collection('ProjectDetail')->where('userId','==',$id)->documents();
+		// dd($projects);
+		foreach ($projects as  $project) {
+			if($project->exists()){
+				// dd($project->data()['userId']);
+				$followingPost =$this->db->collection('followingPostData')->document($id)->collection($id)->newDocument();
+				$followingPost->set([
+					'postForm'=>$project->data()['userId'],
+					'postId'=>$project->id(),
+					'timestamp'=>$project->data()['timestamp']
+				]);
 
+			}
+		}
+		
 		Session::flash('success','your are follow this User');
 		return redirect()->back();
+
+
 	}
+	// public function followUser($id){
+	// 	$follow =$this->db->collection('Followers')->newDocument();
+	// 	$follow->set([
+	// 		'followedBy'=>Session::get('uid'),
+	// 		'following'=>$id,
+	// 	]);
+
+	// 	Session::flash('success','your are follow this User');
+	// 	return redirect()->back();
+	// }
 
 	
 

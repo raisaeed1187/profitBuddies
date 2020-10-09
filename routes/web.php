@@ -20,8 +20,6 @@ Route::get('/getData','FirebaseController@getData');
 // Route::get('/signOut','FirebaseController@signOut');
 
 
-
-
 Route::get('/firebase',[
     'uses' => 'FirebaseController@index',
     'as'=>'firebase'
@@ -67,6 +65,16 @@ Route::group(['middleware'=>'firebase'],function(){
         'uses' => 'HomeController@following',
         'as'=>'following'
     ]);
+
+    Route::get('/show_followings',[
+        'uses' => 'UsersController@followings',
+        'as'=>'show.followings'
+    ]);
+    Route::get('/show_followers',[
+        'uses' => 'UsersController@followers',
+        'as'=>'show.followers'
+    ]);
+
     
     Route::get('/add_project',[
         'uses' => 'HomeController@addProject',

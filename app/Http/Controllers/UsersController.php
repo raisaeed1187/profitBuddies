@@ -44,7 +44,7 @@ class UsersController extends Controller
         // dd($following);
         // dd($followings->size());
         
-
+  
         // dd(sizeOf($followers));
 
 
@@ -183,5 +183,43 @@ class UsersController extends Controller
 
 
    // }
+
+   public function followings(){
+        $id = Session::get('uid');
+        // dd($id);
+        $followings = $this->db->collection('Followers')->where('followedBy','==',$id)->documents();
+        $users = array();
+
+			foreach($followings as $following) {
+            	if($following->exists()){
+                    // dd($following->data()['following']);
+               		$usr = $this->db->collection('backend_users')->document($following->data()['following'])->snapshot();							
+					// $user = $usr->toArray();
+					array_push($users,$usr);
+					
+				}
+			}
+        dd($users);
+        return view('dashboard.following')->with('users',$users);
+   }
+
+   public function followers(){
+        $id = Session::get('uid');
+        $followers = $this->db->collection('Followers')->where('following','==',$id)->documents();
+        // dd($followers);
+        $users = array();
+
+			foreach($followers as $follower) {
+            	if($follower->exists()){
+                    // dd($following->data()['following']);
+               		$usr = $this->db->collection('backend_users')->document($follower->data()['followedBy'])->snapshot();							
+					// $user = $usr->toArray();
+					array_push($users,$usr);
+					
+				}
+            }
+            // dd($users);
+        return view('dashboard.following')->with('users',$users);
+   }
 
 }
