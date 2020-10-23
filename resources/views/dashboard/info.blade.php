@@ -107,7 +107,7 @@
                           <div class="picture-container">
                             <div class="picture">
                               <img
-                                src="{{$user->data()['picUrl']}}"
+                                src="{{$user->data()['profilePictureURL']}}"
                                 class="picture-src"
                                 id="wizardPicturePreview"
                                 title=""
@@ -217,7 +217,7 @@
                             <div class="picture-container">
                               <div class="picture">
                                 <img
-                                  src="{{$user->data()['picUrl']}}"
+                                  src="{{$user->data()['profilePictureURL']}}"
                                   class="picture-src"
                                   id="wizardPicturePreview"
                                   title=""

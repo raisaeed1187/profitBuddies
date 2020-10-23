@@ -38,7 +38,7 @@
                             <div class="trainer-profile d-flex align-items-center">
                             @foreach ($users as $user)
                             @if ($project->data()['userId'] == $user->id())
-                            <img src="{{$user->data()['picUrl']}}" class="img-fluid" alt="">
+                            <img src="{{$user->data()['profilePictureURL']}}" width="70px" height="70px" class="img-fluid" alt="">
                             <span>
                               
                               {{$user->data()['firstName']}} {{$user->data()['lastName']}}
@@ -91,7 +91,7 @@
         <!-- End Popular Courses Section -->
         
         <!-- ======= Trainers Section ======= -->
-        <section id="trainers" class="trainers">
+        {{-- <section id="trainers" class="trainers">
             <div class="container" data-aos="fade-up">
     
             <div class="section-title">
@@ -160,7 +160,7 @@
             </div>
     
             </div>
-        </section>
+        </section> --}}
         <!-- End Trainers Section -->
         
         

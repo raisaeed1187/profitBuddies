@@ -26,7 +26,7 @@ class UsersController extends Controller
         $id = Session::get('uid');
 		// dd($id);
 		$user = $this->db->collection('backend_users')->document($id)->snapshot();
-		// dd($user);
+		// dd($user->data()['profilePictureURL']);
 	  // foreach($user as $u) {
         //     if($u->exists()){
         //         print_r('email = '.$u->id());
@@ -62,21 +62,25 @@ class UsersController extends Controller
 
         // app('firebase.storage')->reference()->child('Project/')->put($request->image);
         // dd('upload');
+
         $image = $request->image; //base64 string from frontend
         $id = Session::get('uid');
         // dd($id);
         $user = app('firebase.firestore')->database()->collection('ProjectDetail')->document($id);
         // $firebase_storage_path = '';
         // $name = rand();
+        $usr = $this->db->collection('backend_users')->document($id)->snapshot();
+        // dd($usr->data()['profilePictureURL']);
         // dd($rand);
         $name = $user->id();
         $localfolder = public_path('firebase-temp-uploads') .'/';
-        $extension  = $image->getClientOriginalExtension();
-        $file = $name. '.' . $extension;
-        // $file = 'test.PNG';
-        // app('firebase.storage')->getBucket()->upload($file, ['name' => $firebase_storage_path . $name]);
-        // dd('sccusses');    
-        if ($image->move($localfolder, $file)) {
+        if ($image!=null) {
+            $extension  = $image->getClientOriginalExtension();
+            $file = $name. '.' . $extension;
+            // $file = 'test.PNG';
+            // app('firebase.storage')->getBucket()->upload($file, ['name' => $firebase_storage_path . $name]);
+            // dd('sccusses');    
+            if ($image->move($localfolder, $file)) {
 
                 $uploadedfile = fopen($localfolder.$file, 'r');
                 $uploadedObject = app('firebase.storage')->getBucket()->upload($uploadedfile, ['name' => $file]);
@@ -90,26 +94,33 @@ class UsersController extends Controller
             } else {
                 echo 'error';
             }
-            $expiresAt = new \DateTime('2099-12-12');
+            $expiresAt = new \DateTime('3099-12-12');
             $imageLink = $uploadedObject->signedUrl($expiresAt).PHP_EOL;
+        } else {
+            $imageLink = $usr->data()['profilePictureURL'];
+        }
+        
+        
             // dd($imageLink);
             // Direct access
             // dd(app('firebase.storage')->getBucket()->object("Project/test.PNG")->signedUrl($expiresAt));
 
-
+        
 
         // dd($request->all());
         // $id = Session::get('uid');
         $user = $this->db->collection('backend_users')->document($id);
+
         $user->set([
                 'firstName'=> $request->firstName,
                 'lastName' => $request->lastName,
                 'gender' => $request->gender,
                 'bussinerHistory' => $request->history,
-                'picUrl'=>$imageLink,
+                'profilePictureURL'=>$imageLink,
                 'nationality'=>$request->country,
                 'userID'=>$id,
                 'userName'=>$request->userName,
+                'email'=>Session::get('uemail'),
             ]);
         
         Session::flash('success','you updated your profile');
@@ -199,7 +210,7 @@ class UsersController extends Controller
 					
 				}
 			}
-        dd($users);
+        // dd($users);
         return view('dashboard.following')->with('users',$users);
    }
 

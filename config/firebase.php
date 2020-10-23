@@ -31,8 +31,8 @@ return [
      *
      */
     'credentials' => [
-        // 'file' => env('FIREBASE_CREDENTIALS'),
-        'file'=>base_path('firebase-credentials.json'),
+        'file' => env('FIREBASE_CREDENTIALS'),
+        // 'file'=>base_path('firebase-credentials.json'),
         /**
          * If you want to prevent the auto discovery of credentials, set the
          * following parameter to false. If you disable it, you must

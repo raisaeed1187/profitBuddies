@@ -1,7 +1,6 @@
 <?php
 
 use RealRashid\SweetAlert\Facades\Alert;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,7 +25,6 @@ Route::get('/firebase',[
 ]);
 
 Route::get('/signUpForm', function () {
-    Alert::success('Success Title', 'Success Message');
     return view('signUp');
 });
 
@@ -51,15 +49,20 @@ Route::post('/signUp',[
 ]);
 
 Route::get('/signOut', function(){
-    Session::forget('uid');
+	Session::flush();
     return view('signIn');
 });
+
+Route::get('/','HomeController@index');
+Route::get('/projects',[
+    'uses' => 'HomeController@projects',
+    'as'=>'projects'
+]);
 
 
 Route::group(['middleware'=>'firebase'],function(){
 
     
-    Route::get('/','HomeController@index');
 
     Route::get('/following',[
         'uses' => 'HomeController@following',
@@ -70,6 +73,7 @@ Route::group(['middleware'=>'firebase'],function(){
         'uses' => 'UsersController@followings',
         'as'=>'show.followings'
     ]);
+    
     Route::get('/show_followers',[
         'uses' => 'UsersController@followers',
         'as'=>'show.followers'
@@ -86,12 +90,6 @@ Route::group(['middleware'=>'firebase'],function(){
         'as'=>'store.project'
     ]);
     
-
-    Route::get('/projects',[
-        'uses' => 'HomeController@projects',
-        'as'=>'projects'
-    ]);
-
     
     Route::get('/userInfo',[
         'uses' => 'UsersController@index',
@@ -112,20 +110,11 @@ Route::group(['middleware'=>'firebase'],function(){
         'uses' => 'HomeController@followProject',
         'as'=>'follow.project'
     ]);
-    
-
-
-    
-
-
-Route::get('/{id}',[
-    'uses' => 'HomeController@projectDetails',
-    'as'=>'project'
-]);
-Route::post('/comment',[
-    'uses' => 'HomeController@comment',
-    'as'=>'comment'
-]);
+  
+    Route::post('/comment',[
+        'uses' => 'HomeController@comment',
+        'as'=>'comment'
+    ]);
 
 
 
@@ -133,7 +122,10 @@ Route::post('/comment',[
 
     
 });
-
+Route::get('/{id}',[
+    'uses' => 'HomeController@projectDetails',
+    'as'=>'project'
+]);
 
 // Route::get('/contact', function () {
 // 	$languages=['PHP','C#','ASP.Net','C++','jQuery'];

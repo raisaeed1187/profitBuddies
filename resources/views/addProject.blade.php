@@ -33,14 +33,14 @@
 							<div class="col-sm-6">
 								<div class="inputBox ">
 									<div class="inputText">Total Budget</div>
-									<input type="number" name="totalbudget" class="input" value="0" min="0" required>
+									<input type="number" name="totalbudget" class="input"  min="0" required>
 								</div>
 							</div>
 
 							<div class="col-sm-6">
 								<div class="inputBox">
 									<div class="inputText">Remaining Budget</div>
-									<input type="number" name="remainingbudget" class="input" value="0" min="0" required>
+									<input type="number" name="remainingbudget" class="input"  min="0" required>
 								</div>
 							</div>
 						</div>
@@ -48,7 +48,7 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="inputBox">
-									<div class="inputText">Pick Currency</div>
+									<div style="font-size: 18px;opacity: 1;color: #00d4a6;">Pick Currency</div>
 									<select name="currency" id="currencies" class="input" id="" required>
 										<option value="">Select a Currency</option>
 									</select>
@@ -57,7 +57,7 @@
 
 							<div class="col-sm-6">
 								<div class="inputBox">
-									<div class="inputText">Location</div>
+									<div style="font-size: 18px;opacity: 1;color: #00d4a6;">Location</div>
 									<select name="country" id="countries" class="input" id="" required>
 										<option value="">Select your location</option>
 									</select>

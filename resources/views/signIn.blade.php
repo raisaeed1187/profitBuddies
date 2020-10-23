@@ -102,12 +102,18 @@ label {
 </head>
 <body>
 <div class="signup-form">
+	<h1 style="margin-left:60px; color:#00b073;line-height: normal;font-family: 'Courgette', sans-serif; "><a href="/"> Profit Buddies </a></h1>
     <form action="{{route('signIn')}}" method="post">
         @csrf
 		<div class="form-header">
 			<h2>Sign In</h2>
 			{{-- <p>Fill out this form to start your free trial!</p> --}}
 		</div>
+		@if (Session::has('message'))
+			
+			<label style="color:red;">{{Session::get('message')}}</label>
+			
+		@endif
         <div class="form-group">
 			<label>Email Address</label>
         	<input type="email" class="form-control" name="email" required="required">

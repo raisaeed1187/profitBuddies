@@ -96,7 +96,7 @@
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
 
   <script>
-    // alert('slam');
+    // Swal.fire("slam");
     @if(Session::has('success'))
                 
           Swal.fire("{{Session::get('success')}}");

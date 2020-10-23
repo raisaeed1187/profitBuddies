@@ -34,7 +34,7 @@
                       <div class="trainer-profile d-flex align-items-center">
                       @foreach ($users as $user)
                       @if ($project->data()['userId'] == $user->id())
-                        <img src="{{$user->data()['picUrl']}}" class="img-fluid" alt="">
+                        <img src="{{$user->data()['profilePictureURL']}}" class="img-fluid" alt="">
                         <span>
                           
                           {{$user->data()['firstName']}} {{$user->data()['lastName']}}

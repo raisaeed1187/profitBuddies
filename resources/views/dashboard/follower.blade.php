@@ -23,7 +23,7 @@
               
               <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
                 <div class="member">
-                  <img src="{{$user->data()['picUrl']}}" class="img-fluid" alt="">
+                  <img src="{{$user->data()['profilePictureURL']}}" class="img-fluid" alt="">
                   <div class="member-content">
                     <h4>{{$user->data()['firstName']}} {{$user->data()['lastName']}}</h4>
                     <span>Web Development</span>

@@ -106,12 +106,19 @@ select, option {
 </head>
 <body>
 <div class="signup-form">
+	<h1 style="margin-left:60px; color:#00b073;line-height: normal;font-family: 'Courgette', sans-serif; "><a href="/"> Profit Buddies </a></h1>
+
     <form action="{{route('signUp')}}" method="post">
         @csrf
 		<div class="form-header">
 			<h2>Sign Up</h2>
 			{{-- <p>Fill out this form to start your free trial!</p> --}}
 		</div>
+		@if (Session::has('registerMsg'))
+			
+			<label style="color:red;">{{Session::get('registerMsg')}}</label>
+			
+		@endif
 		<div class="row">
 			<div class="col-md-6">
 				<div class="form-group">

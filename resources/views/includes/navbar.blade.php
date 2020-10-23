@@ -1,10 +1,10 @@
 <!-- ======= Header ======= -->
 <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center">
+      {{-- <a href="/" class="logo mr-auto" ><img src="assets/img/logo.jpeg" alt="" class="img-fluid"></a> --}}
 
       <h1 class="logo mr-auto"><a href="/">Profit Buddies</a></h1>
       <!-- Uncomment below if you prefer to use an image logo -->
-      <!-- <a href="index.html" class="logo mr-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
       <nav class="nav-menu d-none d-lg-block">
         <ul>
@@ -16,9 +16,14 @@
 
         </ul>
       </nav><!-- .nav-menu -->
-
-      <a href="{{route('user_info')}}" class="get-started-btn">Dashboard</a>
-      <a href="/signOut" class="get-started-btn">Log Out</a>
+      @if (Session::get('uid') == null)
+        <a href="/signInForm" class="get-started-btn">Sign In</a>
+          
+      @else
+        <a href="{{route('user_info')}}" class="get-started-btn">Dashboard</a>
+        <a href="/signOut" class="get-started-btn">Log Out</a>
+      @endif
+      
 
     </div>
   </header><!-- End Header -->

@@ -25,18 +25,15 @@ class HomeController extends Controller
 	//-----------------------SignIn----------
 	public function signIn(Request $request){
 
-		// dd($request->all());
-
         try {
             $email = $request->email;
             $password = $request->password;
-            // $user = app('firebase.auth')->verifyPassword($email,$password);
-            $auth=app('firebase.auth');
+			$auth=app('firebase.auth');
             $user= $auth->signInWithEmailAndPassword($email,$password);
             // $user=$auth->onAuthStateChanged();
             // dd($user->data()['email']);
             if($user) {
-					 echo 'login success';
+					//  echo 'login success';
 					//  dd($user)
 					 \Session::put('uid', $user->data()['localId']);
 					 Session::put('uemail',$user->data()['email']);
@@ -44,10 +41,22 @@ class HomeController extends Controller
 					return redirect('/');
             } else {
                     echo 'email verification pending';
-            }
-            } catch (\Kreait\Firebase\Exception\Auth\InvalidPassword $ex) {
-                echo 'Invalid password';
-            }
+            	}
+            } catch (\Kreait\Firebase\Exception\Auth\InvalidPassword $e) {
+				$message = $e->getMessage();
+				// Session::flash('success', $message);
+				Session::put('message', $message);
+				return redirect('signInForm');
+			} catch (\Kreait\Firebase\Exception\InvalidArgumentException $e) {
+				$message = $e->getMessage();
+				Session::put('message', $message);
+				return redirect('signInForm');
+			} catch (\Kreait\Firebase\Auth\SignIn\FailedToSignIn $e) {
+				$message = $e->getMessage();
+				// Session::flash('success', $message);
+				Session::put('message', $message);
+				return redirect('signInForm');
+			}
     
     }
 
@@ -69,7 +78,7 @@ class HomeController extends Controller
 		];
 	
 		app('firebase.auth')->sendEmailVerificationLink($email, $actionCodeSettings);
-	
+		$blockedBy = array();
 		// dd($authRef); //This is unique id of inserted user.
 		$user =$this->db->collection('backend_users')->newDocument();
 		$user->set([
@@ -78,10 +87,11 @@ class HomeController extends Controller
 			'lastName'=>$request->lastName,
 			'nationality'=>$request->country,
 			'gender'=>'',
+			'blockedBy'=>$blockedBy,
 			'userID'=>$authRef->uid,
 			'userName'=>$request->userName,
 			'bussinerHistory'=>$request->history,
-			'picUrl'=>'',
+			'profilePictureURL'=>'',
 
 		]);
 		
@@ -90,14 +100,17 @@ class HomeController extends Controller
 		return redirect('/signInForm');
 	} 
 	catch (\Kreait\Firebase\Exception\Auth\EmailExists $ex) {
-	echo 'email already exists';
+		Session::put('registerMsg','email already exists');
+		return redirect('signUpForm');
 	}
 }
 
 	//=----------------logout---------------
 
 	public function signOut(){
-        // dd('sign out');
+		// dd('sign out');
+		// Session::flush();
+		// Session::forget('message');
         app('firebase.auth')->signOut();
         // app('firebase.auth')->unAuth();
 
@@ -106,7 +119,7 @@ class HomeController extends Controller
 
 	//--------------Index------------
 	public function index(Request $request){
-
+		// dd(Session::get('uid'));
 		// $student = app('firebase.firestore')->database()->collection('Student')->document('defT5uT7SDu9K5RFtIdl')->snapshot();
 
 		$projects = $this->db->collection('ProjectDetail')->documents();
@@ -127,9 +140,10 @@ class HomeController extends Controller
 
             // foreach($projects as $project) {
             // if($project->exists()){
+			// 	// dd($project);
             //     print_r('email = '.$project->id());
-            //     print_r('location = '.$project->data()['location']);
-            //     dd('url = '.$project->data()['picUrl']);
+            //     // dd('location = '.$project->data()['location']);
+            //     dd('url = '.$project->data()['picUrl'][0]);
 
           	//   }
         	// }
@@ -201,7 +215,7 @@ class HomeController extends Controller
 
 	//---------------------all projects---------------
 	public function projects(){
-
+		
 		// $followers = $this->db->collection('Followers')->where('followedBy','==',Session::get('uid'))->documents();	
         // $followingPosts = array();
 
@@ -226,8 +240,8 @@ class HomeController extends Controller
 		// }
 		// dd($projects);
 		$users = array();
-		$projects = $this->db->collection('ProjectDetail')->documents();
-
+		$projects = $this->db->collection('ProjectDetail')->orderBy('timestamp','desc')->documents();
+		
 			foreach($projects as $project) {
             	if($project->exists()){
                		$usr = $this->db->collection('backend_users')->document($project->data()['userId'])->snapshot();							
@@ -236,9 +250,7 @@ class HomeController extends Controller
 					
 				}
 			}
-
-	
-
+			
 		return view('projects')->with('projects',$projects)
 							   ->with('users',$users);
 							   
@@ -246,9 +258,11 @@ class HomeController extends Controller
 	}
 
 	public function storeProject(Request $request){
-		
+		$timestamp = (int) round(now()->format('Uu') / pow(10, 6 - 3));
+		// dd($timestamp);
 		// dd($request->all());
 		$imageLink =array();
+		$reportedBy = array();
 		$images= $request->image;
 		$id = Session::get('uid');
         $projct = app('firebase.firestore')->database()->collection('ProjectDetail')->document($id);
@@ -285,11 +299,12 @@ class HomeController extends Controller
 			'currency'=>$request->currency,
 			'location'=>$request->country,
 			'picUrl'=>$imageLink,
-			'postId'=>"",
+			'postId'=>$timestamp,
 			'projectdes'=>$request->description,
 			'projectstatus'=>"active",
 			'projecttype'=>$request->title,
 			'remainbudget'=>$request->remainingbudget,
+			'reportedBy'=>$reportedBy,
 			'totalbudget'=>$request->totalbudget,
 			'userId'=>$id,
 			'timestamp'=>$date,
@@ -312,7 +327,7 @@ class HomeController extends Controller
 			if($follow->exists()){
 				// dd($follow->data()['following']);
 				$following = $follow->data()['following'];
-				$followingPost =$this->db->collection('followingPostData')->document($follow->data()['following'])->collection($follow->data()['following'])->where('postForm','==',$follow->data()['following'])->documents();
+				$followingPost =$this->db->collection('followingPostData')->document($follow->data()['following'])->collection($follow->data()['following'])->orderBy('timestamp','desc')->where('postForm','==',$follow->data()['following'])->documents();
 				array_push($followingPosts,$followingPost);
 
 			}
