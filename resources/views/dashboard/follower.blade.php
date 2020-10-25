@@ -1,4 +1,11 @@
 @extends('layouts.layout')
+@section('nav')
+            <li ><a href="/">Home</a></li>
+          <li><a href="{{route('projects')}}">Projects</a></li>
+          <li><a href="{{route('following')}}">Following</a></li>
+          <li><a href="{{route('add_project')}}">Add Project</a></li>
+    
+@endsection()
 @section('content')
 
 <main id="main" data-aos="fade-in">

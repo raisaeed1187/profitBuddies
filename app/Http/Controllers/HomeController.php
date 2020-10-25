@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-
+use Algolia\AlgoliaSearch\SearchClient;
 use Kreait\Firebase;
 // use Kreait\Firebase\Factory;
 use Google\Cloud\Firestore\FirestoreClient;
@@ -11,15 +11,57 @@ use Kreait\Firebase\ServiceAccount;
 // use Kreait\Firebase\Database;
 use Session;
 Use Alert;
-
+use Laravel\Scout\Searchable;
 
 
 class HomeController extends Controller
 {
 	
+	
+
 	protected $db;
+	protected $index;
     public function __construct() {
-        $this->db = app('firebase.firestore')->database();
+		$this->db = app('firebase.firestore')->database();
+		$client = SearchClient::create(
+			'C4QIEL27O7',
+			'97870631eaee16c95aebecee54ea3746'
+		  );
+		  
+		  $this->index = $client->initIndex('posts');
+	}
+	
+	public function searchPosts(Request $request){
+		// $res = $index->search('query string');
+		// with search parameters
+		
+		// dd($request->search);
+		$users = array();
+		if ($request->search != null) {
+		
+		$res = $this->index->search($request->search, [
+		'attributesToRetrieve' => [
+			'projecttype',
+		],
+		'hitsPerPage' => 50
+		]);
+		// dd($res['hits']);
+		// dd($res['hits'][0]['_highlightResult']['picUrl']['value']);
+
+		foreach ($res['hits'] as $hit) {
+			# code...
+			$usr = $this->db->collection('backend_users')->document($hit['_highlightResult']['userId']['value'])->snapshot();							
+					
+			array_push($users,$usr);
+		}
+		$projects = $res['hits'];
+		return view('search-result')->with('projects',$projects)
+							   ->with('users',$users);
+
+		
+		} else {
+				return redirect()->back();
+			}
 	}
 	
 	//-----------------------SignIn----------
@@ -264,6 +306,7 @@ class HomeController extends Controller
 		$imageLink =array();
 		$reportedBy = array();
 		$images= $request->image;
+		// dd($images);
 		$id = Session::get('uid');
         $projct = app('firebase.firestore')->database()->collection('ProjectDetail')->document($id);
 		
@@ -310,6 +353,24 @@ class HomeController extends Controller
 			'timestamp'=>$date,
 
 		]);
+		$this->index->saveObjects(
+			  [
+				'objectID' => $project->id(),
+				'contact'=>$request->email,
+				'currency'=>$request->currency,
+				'location'=>$request->country,
+				'picUrl'=>$imageLink,
+				'postId'=>$timestamp,
+				'projectdes'=>$request->description,
+				'projectstatus'=>"active",
+				'projecttype'=>$request->title,
+				'remainbudget'=>$request->remainingbudget,
+				'reportedBy'=>$reportedBy,
+				'totalbudget'=>$request->totalbudget,
+				'userId'=>$id,
+				'timestamp'=>$date,
+			  ],
+			);
 
 		Session::flash('success','New Project Added');
 
@@ -404,8 +465,83 @@ class HomeController extends Controller
 	// }
 
 	
+	// public function search(Request $request){
+	// 	$users = array();
+	// 	$projects = $this->db->collection('ProjectDetail')->orderBy('projecttype')->startAt($request->search)->endAt($request->search+'\uf8ff')->documents();
+		
+	// 		foreach($projects as $project) {
+    //         	if($project->exists()){
+    //            		$usr = $this->db->collection('backend_users')->document($project->data()['userId'])->snapshot();							
+					
+	// 				array_push($users,$usr);
+					
+	// 			}
+	// 		}
+			
+	// 	return view('Projects')->with('projects',$projects)
+	// 						   ->with('users',$users);
+	// }
+
+	
+
+	public function addIndex(){
+		$projects = $this->db->collection('ProjectDetail')->documents();
+		// dd($projects);
+		// print_r('Total records: '.$projects->size());
+
+            foreach($projects as $project) {
+            if($project->exists()){
+				// dd($project);
+                // print_r('email = '.$project->id());
+                // // dd('location = '.$project->data()['location']);
+				// dd('url = '.$project->data()['picUrl'][0]);
+				
+				$this->index->saveObject(
+					[
+						'objectID' => $project->id(),
+						'contact'=>$project->data()['contact'],
+						'currency'=>$project->data()['currency'],
+						'location'=>$project->data()['location'],
+						'picUrl'=>$project->data()['picUrl'],
+						'postId'=>$project->data()['postId'],
+						'projectdes'=>$project->data()['projectdes'],
+						'projectstatus'=>$project->data()['projectstatus'],
+						'projecttype'=>$project->data()['projecttype'],
+						'remainbudget'=>$project->data()['remainbudget'],
+						'reportedBy'=>$project->data()['reportedBy'],
+						'totalbudget'=>$project->data()['totalbudget'],
+						'userId'=>$project->data()['userId'],
+						'timestamp'=>$project->data()['timestamp'],
+					  ],
+				  );
+
+          	  }
+        	}
+		  
+
+		  print_r('data added');
+	}
+
 
 	//-------------------dashboard section-------------
+
+
+	public function save_image(Request $request) {
+		$user = new User;   
+	   if ($request->hasFile('picture')) {
+		   $completeFileName = $request->file('picture')->getClientOriginalName();
+		   $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
+		   $extension = $request->file('picture')->getClientOriginalExtension();
+		   $compPic = str_replace(' ', '_', $fileNameOnly).'-'. rand() .'_'.time().'.'.$extension;
+		   $path = $request->file('picture')->storeAs('public/users', $compPic);
+		   $user->picture = 'users/'.$compPic;
+	   }
+	   if($user->save()){
+		   echo 200;
+	   }else{
+		   echo 700;
+	   }
+   }
 
 	
 

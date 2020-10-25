@@ -9,7 +9,7 @@
     <!-- Favicons -->
   {{-- <link href="assets/img/favicon.png" rel="icon"> --}}
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
@@ -22,7 +22,7 @@
   <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
 
-  <!-- Template Main CSS File -->
+  <!-- Template Main CSS File --> 
   <link href="assets/css/style.css" rel="stylesheet">
   <link href="css/form.css" rel="stylesheet">
   
@@ -110,6 +110,43 @@
       $(this).addClass('active');
     });
   </script>
+  <script>
+    $(document).ready(function() {
+     
+     $(".search").click(function() {
+        $(".search-box").toggle();
+        $("input[type='text']").focus();
+      });
 
+  });
+  </script>
+  <script>
+    var modal = document.getElementById("modal");
+    var trigger = document.getElementById("searchTrigger");
+    var close = document.getElementsByClassName("close")[0];
+    
+    trigger.onclick = function ()
+    {
+        modal.style.display = "block";
+    }
+    close.onclick = function ()
+    {
+        modal.style.display = "none";
+    }
+    window.onclick = function (event)
+    {
+        if(event.target == modal)
+        {
+            modal.style.display = "none";
+        }
+    }
+
+    function toggleNav() {
+        var e = document.getElementById("navigation");
+        e.classList.toggle("active");
+    }
+   
+</script>
+@yield('javascript')
   </body>
 </html>

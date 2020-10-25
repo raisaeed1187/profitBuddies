@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 @section('nav')
-            <li ><a href="/">Home</a></li>
-          <li class="active"><a href="{{route('projects')}}">Projects</a></li>
+            <li><a href="/">Home</a></li>
+          <li><a href="{{route('projects')}}">Projects</a></li>
           <li><a href="{{route('following')}}">Following</a></li>
           <li><a href="{{route('add_project')}}">Add Project</a></li>
     
@@ -13,7 +13,7 @@
   <!-- ======= Breadcrumbs ======= -->
   <div class="breadcrumbs">
     <div class="container">
-      <h1> Projects </h1>  
+      <h1> Search Results</h1>  
     </div>
   </div><!-- End Breadcrumbs -->
 
@@ -24,23 +24,22 @@
       <div class="row" data-aos="zoom-in" data-aos-delay="100">
                 
         @foreach ($projects as $project)
-            @if ($project->exists())
                 
             <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
               <div class="course-item">
-                  <img src="{{$project->data()['picUrl'][0]}}" style="max-height: 300px;" class="img-fluid" alt="...">
+                  <img src="{{$project['_highlightResult']['picUrl'][0]['value']}}" style="max-height: 300px;" class="img-fluid" alt="...">
                   <div class="course-content">
                   <div class="d-flex justify-content-between align-items-center mb-3">
-                      <h4>{{$project->data()['location']}}</h4>
-                      <p class="price">${{$project->data()['totalbudget']}}</p>
+                      <h4>{{$project['_highlightResult']['location']['value']}}</h4>
+                      <p class="price">${{$project['_highlightResult']['totalbudget']['value']}}</p>
                   </div>
   
-                  <h3><a href="{{$project->id()}}">{{$project->data()['projecttype']}}</a></h3>
-                  <p>{{$project->data()['projectdes']}}</p>
+                  <h3><a href="{{$project['objectID']}}">{{$project['_highlightResult']['projecttype']['value']}}</a></h3>
+                  <p>{{$project['_highlightResult']['projectdes']['value']}}</p>
                   <div class="trainer d-flex justify-content-between align-items-center">
                       <div class="trainer-profile d-flex align-items-center">
                       @foreach ($users as $user)
-                      @if ($project->data()['userId'] == $user->id())
+                      @if ($project['_highlightResult']['userId']['value'] == $user->id())
                         <img src="{{$user->data()['profilePictureURL']}}" class="img-fluid" alt="">
                         <span>
                           
@@ -60,7 +59,6 @@
               </div>
             </div> <!-- End Course Item-->
             
-            @endif
         @endforeach  
 
         {{-- <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-lg-0">

@@ -267,6 +267,141 @@ h6 {
         content: "\ea9d";
     }
 }
+nav ul li .search {
+    line-height: 8px;
+    padding: 10px;
+    transition: 0.4s;
+    color: white;
+    background-color: black;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+nav ul li .search:hover,
+nav ul li .search:focus {
+    color: black;
+    background-color: #5fcf80;
+}
+nav .toggleNav {
+    float: right;
+    line-height: 70px;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: none;
+}
+.modal {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: none;
+    transition: 0.4s;
+    overflow: auto;
+}
+.modal-content {
+    position: fixed;
+    left: 50%;
+    top: 100px;
+    transform: translateX(-50%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background-color: white;
+    padding: 10px;
+    width: 40%;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.4),
+        0 6px 16px 0 rgba(0, 0, 0, 0.19);
+    animation: animate 0.5s;
+}
+@keyframes animate {
+    from {
+        opacity: 0;
+        top: -100px;
+    }
+    to {
+        opacity: 1;
+        top: 100px;
+    }
+}
+.close {
+    cursor: pointer;
+    float: right;
+    color: rgba(0, 0, 0, 0.4);
+}
+.modal-body {
+    margin-top: 20px;
+    text-align: center;
+    padding: 10px;
+}
+.searchbx {
+    padding: 5px;
+    width: 80%;
+    border: none;
+    background: transparent;
+    color: black;
+    outline: none;
+    font-size: 18px;
+    border-bottom: 1px solid black;
+}
+@media screen and (max-width: 650px) {
+    nav .toggleNav {
+        display: block;
+        margin-right: 30px;
+    }
+    .modal-content {
+        width: 80%;
+    }
+    .modal-header h2 {
+        font-size: 20px;
+    }
+    .modal-body {
+        padding: 20px;
+    }
+}
+.search-box {
+    background: #e8e8e4;
+    position: absolute;
+    top: 54px;
+    right: 8%;
+    width: 350px;
+    height: 60px;
+    line-height: 60px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-top: 4px solid #5fcf80;
+    display: none;
+}
+
+.search-box:before {
+    content: "";
+    position: absolute;
+    top: -32px;
+    right: 5px;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid #5fcf80;
+}
+
+.search-box input[type="text"] {
+    width: 200px;
+    height: 40px;
+    font-size: 25px;
+    margin-left: 23px;
+    border: 1px solid #5fcf80;
+    outline: none;
+}
+
+.search-box input[type="submit"] {
+    width: 124px;
+    height: 55px;
+    font-size: 20px;
+
+    background: #5fcf80;
+    color: #fff;
+    border: 1px solid #5fcf80;
+    outline: none;
+    cursor: pointer;
+}
 
 /* Get Startet Button */
 .get-started-btn {
@@ -408,7 +543,8 @@ h6 {
 #hero {
     width: 100%;
     height: 90vh;
-    background: url("../img/hero-bg-3.jpg") top center;
+    /* background: url("../img/hero-bg-3.jpg") top center; */
+    background-color: #5fcf80;
     background-size: cover;
     position: relative;
 }
@@ -1578,4 +1714,64 @@ section {
     background: #3ac162;
     color: #fff;
     text-decoration: none;
+}
+
+/* -----------------add image section  */
+.photo-img {
+    width: 360px;
+    height: 200px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin-right: 20px;
+    border-radius: 10%;
+    border: 2px solid #3ac162;
+}
+.photo-row {
+    margin-bottom: 30px;
+}
+.profile-content,
+.photo-row {
+    display: flex;
+    align-items: center;
+}
+.change-photo {
+    cursor: pointer;
+    color: #010101;
+    font-size: 22px;
+    font-weight: 400;
+    font-family: "Open Sans", sans-serif;
+}
+.change-photo {
+    font-size: 22px;
+}
+
+/* -----------------add image 2 section  */
+.photo-img2 {
+    width: 360px;
+    height: 200px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin-right: 20px;
+    border-radius: 10%;
+    border: 2px solid #3ac162;
+}
+.photo-row2 {
+    margin-bottom: 30px;
+}
+.profile-content2,
+.photo-row2 {
+    display: flex;
+    align-items: center;
+}
+.change-photo2 {
+    cursor: pointer;
+    color: #010101;
+    font-size: 22px;
+    font-weight: 400;
+    font-family: "Open Sans", sans-serif;
+}
+.change-photo2 {
+    font-size: 22px;
 }

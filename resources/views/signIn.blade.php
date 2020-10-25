@@ -98,6 +98,13 @@ label {
   position: relative;
   z-index: 2;
 }
+@media screen and (max-width: 650px) {
+	.signup-form {
+	width: 360px;
+	margin: 0 auto;	
+	padding: 10px 0;	
+}
+}
 </style>
 </head>
 <body>

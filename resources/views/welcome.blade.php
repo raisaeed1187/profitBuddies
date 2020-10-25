@@ -1,10 +1,20 @@
- @extends('layouts.layout')
 
+@extends('layouts.layout')
+@section('nav')
+            <li class="active"><a href="/">Home</a></li>
+          <li><a href="{{route('projects')}}">Projects</a></li>
+          <li><a href="{{route('following')}}">Following</a></li>
+          <li><a href="{{route('add_project')}}">Add Project</a></li>
+    
+@endsection()
       @section('content')
         
         <!-- ======= Hero Section ======= -->
             <section id="hero" class="d-flex justify-content-center align-items-center">
                 <div class="container position-relative" data-aos="zoom-in" data-aos-delay="100">
+                    <h1>
+                        Search Projects To Invest,<br> In Built Your Future With Us And Find Your Profit Buddies
+                    </h1>
                 </div>
             </section>
         <!-- End Hero -->

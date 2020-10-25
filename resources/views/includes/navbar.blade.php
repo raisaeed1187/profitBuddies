@@ -7,15 +7,38 @@
       <!-- Uncomment below if you prefer to use an image logo -->
 
       <nav class="nav-menu d-none d-lg-block">
-        <ul>
-          <li class="active"><a href="/">Home</a></li>
-          <li><a href="{{route('projects')}}">Projects</a></li>
-          <li><a href="{{route('following')}}">Following</a></li>
-          <li><a href="{{route('add_project')}}">Add Project</a></li>
+        <ul> 
+          @yield('nav')
           
+          {{-- <li><label for="search" class="search" id="searchTrigger"><i class="fa fa-search"></i></label></li> --}}
+          <li class="active">
+            <label for="search" class="search"> <i class="fa fa-search" aria-hidden="true"> </i></label>
+            <div class="search-box">
+              <form action="{{route('search')}}" method="post"> {{ csrf_field() }}
+                <input type="text" name="search" placeholder=""/>
+                <input type="submit" value="Search"/>
+              </form>
+              </div>
+          </li>
 
         </ul>
-      </nav><!-- .nav-menu -->
+        <label class="toggleNav" onclick="toggleNav()"><i class="fa fa-bars"></i></label>
+      </nav>
+      <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="fa fa-times close"></span>
+                <h2>Looking for something?</h2>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="get">
+                    <input type="search" class="searchbx" name="search" autofocus placeholder="Hit ENTER to search..." id="search">
+                </form>
+            </div>
+        </div>
+    </div>
+      
+      <!-- .nav-menu --> 
       @if (Session::get('uid') == null)
         <a href="/signInForm" class="get-started-btn">Sign In</a>
           

@@ -248,8 +248,8 @@
                               </div>
                             </div>
                             <div class="col-sm-5 col-sm-offset-1">
-                              <div class="form-group label-floating">
-                                <label class="control-label">Gender</label>
+                              <div class="form-group label-floating"> 
+                                <label>Gender</label>
                                 <select name="gender" class="form-control">
                                   <option disabled="" selected="">{{$user->data()['gender']}}</option>
                                   <option value="Male"> Male </option>
@@ -261,7 +261,7 @@
                             </div>
                             <div class="col-sm-5">
                               <div class="form-group label-floating">
-                                <label class="control-label">Country</label>
+                                <label >Country</label>
                                 <input type="text" class="form-control" name="country" value="{{$user->data()['nationality']}}" disabled >
                                 
                               </div>

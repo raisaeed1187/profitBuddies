@@ -18,6 +18,15 @@ Route::get('/getData','FirebaseController@getData');
 // Route::get('/signIn','FirebaseController@signIn');
 // Route::get('/signOut','FirebaseController@signOut');
 
+//-----------algolia----------
+Route::get('/addIndex',[
+    'uses' => 'HomeController@addIndex',
+    'as'=>'index'
+]);
+// Route::get('/search',[
+//     'uses' => 'HomeController@searchPosts',
+//     'as'=>'search'
+// ]);
 
 Route::get('/firebase',[
     'uses' => 'FirebaseController@index',
@@ -59,6 +68,13 @@ Route::get('/projects',[
     'as'=>'projects'
 ]);
 
+
+Route::post('save_image', 'HomeController@save_image')->name('save.profile.picture');
+
+Route::post('/search',[
+    'uses' => 'HomeController@searchPosts',
+    'as'=>'search'
+]);
 
 Route::group(['middleware'=>'firebase'],function(){
 
