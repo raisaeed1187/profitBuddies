@@ -333,11 +333,11 @@ class HomeController extends Controller
 		}
 		
 		 $date = new \Google\Cloud\Core\Timestamp(new \DateTime('now'));
-		// dd($date);
+		//  dd($date->formatAsString()); 
 		// dd($request->all());
 
-		$project =$this->db->collection('ProjectDetail')->newDocument();
-		$project->set([
+		$projct =$this->db->collection('ProjectDetail')->newDocument();
+		$projct->set([
 			'contact'=>$request->email,
 			'currency'=>$request->currency,
 			'location'=>$request->country,
@@ -353,24 +353,47 @@ class HomeController extends Controller
 			'timestamp'=>$date,
 
 		]);
-		$this->index->saveObjects(
-			  [
+		$project = $this->db->collection('ProjectDetail')->document($projct->id())->snapshot();
+		// dd($project->id());
+		$this->index->saveObject(
+			[
 				'objectID' => $project->id(),
-				'contact'=>$request->email,
-				'currency'=>$request->currency,
-				'location'=>$request->country,
-				'picUrl'=>$imageLink,
-				'postId'=>$timestamp,
-				'projectdes'=>$request->description,
-				'projectstatus'=>"active",
-				'projecttype'=>$request->title,
-				'remainbudget'=>$request->remainingbudget,
-				'reportedBy'=>$reportedBy,
-				'totalbudget'=>$request->totalbudget,
-				'userId'=>$id,
-				'timestamp'=>$date,
+				'contact'=>$project->data()['contact'],
+				'currency'=>$project->data()['currency'],
+				'location'=>$project->data()['location'],
+				'picUrl'=>$project->data()['picUrl'],
+				'postId'=>$project->data()['postId'],
+				'projectdes'=>$project->data()['projectdes'],
+				'projectstatus'=>$project->data()['projectstatus'],
+				'projecttype'=>$project->data()['projecttype'],
+				'remainbudget'=>$project->data()['remainbudget'],
+				'reportedBy'=>$project->data()['reportedBy'],
+				'totalbudget'=>$project->data()['totalbudget'],
+				'userId'=>$project->data()['userId'],
+				'timestamp'=>$project->data()['timestamp'],
 			  ],
 			);
+	  //	// $this->index->saveObjects(
+		// 	  [
+		// 		'objectID' => $project->id(),
+		// 		'contact'=>$request->email,
+		// 		'currency'=>$request->currency,
+		// 		'location'=>$request->country,
+		// 		'picUrl'=>$imageLink,
+		// 		'postId'=>$timestamp,
+		// 		'projectdes'=>$request->description,
+		// 		'projectstatus'=>"active",
+		// 		'projecttype'=>$request->title,
+		// 		'remainbudget'=>$request->remainingbudget,
+		// 		'reportedBy'=>$reportedBy,
+		// 		'totalbudget'=>$request->totalbudget,
+		// 		'userId'=>$id,
+		// 		'timestamp'=>$date->formatAsString(),
+		// 	  ],
+		// 	  [
+		// 		'autoGenerateObjectIDIfNotExist' => true,
+		// 	  ]
+	  //	// 	);
 
 		Session::flash('success','New Project Added');
 
