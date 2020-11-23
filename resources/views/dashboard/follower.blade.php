@@ -2,7 +2,7 @@
 @section('nav')
             <li ><a href="/">Home</a></li>
           <li><a href="{{route('projects')}}">Projects</a></li>
-          <li><a href="{{route('following')}}">Following</a></li>
+          <li><a href="{{route('show.followings')}}">Following</a></li>
           <li><a href="{{route('add_project')}}">Add Project</a></li>
     
 @endsection()
@@ -23,11 +23,10 @@
 
         <div class="row" data-aos="zoom-in" data-aos-delay="100">
 
-           @if ($users->size() > 0)
-                
+           @if (count($users) > 0)
+                 
             @foreach ($users as $user)
               @if ($user->exists())
-              
               <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
                 <div class="member">
                   <img src="{{$user->data()['profilePictureURL']}}" class="img-fluid" alt="">

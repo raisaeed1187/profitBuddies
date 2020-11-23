@@ -2,7 +2,7 @@
 @section('nav')
             <li><a href="/">Home</a></li>
           <li><a href="{{route('projects')}}">Projects</a></li>
-          <li><a href="{{route('following')}}">Following</a></li>
+          <li><a href="{{route('show.followings')}}">Following</a></li>
           <li><a href="{{route('add_project')}}">Add Project</a></li>
     
 @endsection()
@@ -48,9 +48,12 @@
                             
                         </span>
                         </div>
-                          <div class="trainer-rank d-flex align-items-center">
-                              <a href="{{route('follow.user',['id'=>$user->id()])}}" class="get-started-btn">Follow</a>
-                          </div>
+                        @if ($project['_highlightResult']['userId']['value']!= Session::get('uid'))
+                            
+                        <div class="trainer-rank d-flex align-items-center">
+                            <a href="{{route('follow.user',['id'=>$user->id()])}}" class="get-started-btn">Follow</a>
+                        </div>
+                        @endif
                         @break
                       @endif {{--condition if --}}
                       @endforeach

@@ -25,7 +25,7 @@
 
                 @foreach ($projects as $project)
                   @if ($project->exists())
-                  
+                   
                   <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
                     <div class="course-item">
                         <img src="{{$project->data()['picUrl'][0]}}" style="max-height: 300px"  class="img-fluid" alt="...">

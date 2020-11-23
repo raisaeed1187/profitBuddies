@@ -23,7 +23,7 @@ class UsersController extends Controller
 	}
 
     public function index(){
-        $id = Session::get('uid');
+        $id = Session::get('uid'); 
 		// dd($id);
 		$user = $this->db->collection('backend_users')->document($id)->snapshot();
 		// dd($user->data()['profilePictureURL']);
@@ -194,7 +194,7 @@ class UsersController extends Controller
 
 
    // }
-
+ 
    public function followings(){
         $id = Session::get('uid');
         // dd($id);
@@ -210,7 +210,7 @@ class UsersController extends Controller
 					
 				}
 			}
-        // dd($users);
+        // dd($users[0]->id());
         return view('dashboard.following')->with('users',$users);
    }
 
@@ -219,7 +219,7 @@ class UsersController extends Controller
         $followers = $this->db->collection('Followers')->where('following','==',$id)->documents();
         // dd($followers);
         $users = array();
-
+        
 			foreach($followers as $follower) {
             	if($follower->exists()){
                     // dd($following->data()['following']);
@@ -229,8 +229,8 @@ class UsersController extends Controller
 					
 				}
             }
-            // dd($users);
-        return view('dashboard.following')->with('users',$users);
-   }
+            // dd(count($users));
+        return view('dashboard.follower')->with('users',$users);
+   } 
 
 }

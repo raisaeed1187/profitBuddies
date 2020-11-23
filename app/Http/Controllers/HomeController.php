@@ -164,9 +164,11 @@ class HomeController extends Controller
 		// dd(Session::get('uid'));
 		// $student = app('firebase.firestore')->database()->collection('Student')->document('defT5uT7SDu9K5RFtIdl')->snapshot();
 
-		$projects = $this->db->collection('ProjectDetail')->documents();
-		$users = array();
+		// $projects = $this->db->collection('ProjectDetail')->documents();
+		$projects = $this->db->collection('ProjectDetail')->orderBy('timestamp','desc')->documents();
 
+		$users = array();
+		$followings = array();
 			foreach($projects as $project) {
             	if($project->exists()){
                		$usr = $this->db->collection('backend_users')->document($project->data()['userId'])->snapshot();							
@@ -175,6 +177,8 @@ class HomeController extends Controller
 					
 				}
 			}
+			$follows = $this->db->collection('Followers')->where('followedBy','==', Session::get('uid'))->documents();							
+			
 		// $data=$country->data();
 		// dd($data['name']);
 
@@ -191,7 +195,8 @@ class HomeController extends Controller
         	// }
 
 		return view('welcome')->with('projects',$projects)
-							  ->with('users',$users); 
+							  ->with('users',$users)
+							  ->with('follows',$follows); 
 	}
 
 
@@ -202,9 +207,11 @@ class HomeController extends Controller
 		// new \Google\Cloud\Core\Timestamp(new \DateTime('2020-04-04 23:03'));
 
 		// dd($date);
-		$project = $this->db->collection('ProjectDetail')->document($id)->snapshot();
+		$projct = $this->db->collection('ProjectDetail')->document($id)->snapshot();
 		// dd(Session::get('uid'));
-		// dd($project->id());
+		if($projct->data()!=null){
+			$project=$projct;
+		
  
 		$comments = $this->db->collection('comments')->where('postId','==',$project->id())->documents();
 
@@ -216,6 +223,9 @@ class HomeController extends Controller
 
 			foreach($comments as $comment) {
             	if($comment->exists()){
+					// dd(explode('.', $comment->data()['timestamp'], 2)[0]);
+					// $split = explode('.', $splitDate[0],2);
+					// dd($splitDate[0]);
                		$usr = $this->db->collection('backend_users')->document($comment->data()['commentFrom'])->snapshot();							
 					// $user = $usr->toArray();
 					array_push($users,$usr);
@@ -229,23 +239,29 @@ class HomeController extends Controller
 			// 	// print_r($user);
             //     dd($user[0]);
           	  
-        	// }
+			// }
 		return view('project')->with('project',$project)
 							  ->with('comments',$comments)
 							  ->with('users',$users);
+			}
+			else{
+				Session::flash('success','Invalid URL');
+				return redirect()->route('home');
+				// return "invalid Project ID";
+			}
 	} 
 
 	//--------------------comment-------------
 	public function comment(Request $request){
 
 		// print_r($request->all());
-
+		$date = new \Google\Cloud\Core\Timestamp(new \DateTime('now'));
 		$comment =$this->db->collection('comments')->newDocument();
 		$comment->set([
 			'comment'=>$request->comment,
 			'postId'=>$request->postId,
 			'commentFrom'=>Session::get('uid'),
-			'timestamp'=>'',
+			'timestamp'=>$date,
 		]);
 
 		// return \Response::json(array('success'=>true));
@@ -282,19 +298,38 @@ class HomeController extends Controller
 		// }
 		// dd($projects);
 		$users = array();
+		$followings = array();
 		$projects = $this->db->collection('ProjectDetail')->orderBy('timestamp','desc')->documents();
 		
 			foreach($projects as $project) {
             	if($project->exists()){
+					// dd($project);
                		$usr = $this->db->collection('backend_users')->document($project->data()['userId'])->snapshot();							
 					
 					array_push($users,$usr);
 					
 				}
 			}
-			
+			$follows = $this->db->collection('Followers')->where('followedBy','==', Session::get('uid'))->documents();							
+
+			// foreach ($users as $user) {
+				
+				
+			// 	// dd($follows->size());
+			// 	// foreach ($follows as  $follow) {
+			// 	// 	if($follow->exists()){
+			// 	// 		// dd($follow->data()['following']);
+			// 	// 		$following = $follow->data()['following'];
+			// 	// 		$followingPost =$this->db->collection('followingPostData')->document($follow->data()['following'])->collection($follow->data()['following'])->orderBy('timestamp','desc')->where('postForm','==',$follow->data()['following'])->documents();
+			// 	// 		array_push($followingPosts,$followingPost);
+		
+			// 	// 	}
+			// 	// }
+			// }
+				// dd(count($users));
 		return view('projects')->with('projects',$projects)
-							   ->with('users',$users);
+							   ->with('users',$users)
+							   ->with('follows',$follows);
 							   
 
 	}
@@ -439,6 +474,14 @@ class HomeController extends Controller
 								->with('users',$users);
 	}
 	
+	public function unfollow($id){
+		// dd($id);
+		$follow = $this->db->collection('Followers')->where('following','==',$id)->documents();
+		// dd($follow->rows()[0]->id());
+		$this->db->collection('Followers')->document($follow->rows()[0]->id())->delete();
+		return redirect()->route('show.followings');
+	}
+
 	//----------------------add project------------
 	public function addProject(){
 		return view('addProject');
@@ -455,6 +498,7 @@ class HomeController extends Controller
 			'followedBy'=>Session::get('uid'),
 			'following'=>$id,
 		]);
+		
 		//get user posts
 		$projects = $this->db->collection('ProjectDetail')->where('userId','==',$id)->documents();
 		// dd($projects);

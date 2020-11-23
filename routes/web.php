@@ -62,7 +62,10 @@ Route::get('/signOut', function(){
     return view('signIn');
 });
 
-Route::get('/','HomeController@index');
+Route::get('/',[
+    'uses'=>'HomeController@index',
+    'as'=>'home'
+    ]);
 Route::get('/projects',[
     'uses' => 'HomeController@projects',
     'as'=>'projects'
@@ -121,11 +124,16 @@ Route::group(['middleware'=>'firebase'],function(){
         'uses' => 'HomeController@followUser',
         'as'=>'follow.user'
     ]);
-
+    Route::get('/unfollow/{id}',[
+        'uses' => 'HomeController@unfollow',
+        'as'=>'unfollow.user'
+    ]);
     Route::get('/follow/{id}',[
         'uses' => 'HomeController@followProject',
         'as'=>'follow.project'
     ]);
+    
+    
   
     Route::post('/comment',[
         'uses' => 'HomeController@comment',

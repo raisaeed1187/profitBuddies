@@ -3,7 +3,7 @@
 @section('nav')
             <li class="active"><a href="/">Home</a></li>
           <li><a href="{{route('projects')}}">Projects</a></li>
-          <li><a href="{{route('following')}}">Following</a></li>
+          <li><a href="{{route('show.followings')}}">Following</a></li>
           <li><a href="{{route('add_project')}}">Add Project</a></li>
     
 @endsection()
@@ -29,7 +29,9 @@
             </div>
     
             <div class="row" data-aos="zoom-in" data-aos-delay="100">
+            @if ($projects->size()>0)
                 
+            
               @foreach ($projects as $project)
                   @if ($project->exists())
                       
@@ -56,9 +58,23 @@
                                 
                             </span>
                             </div>
-                              <div class="trainer-rank d-flex align-items-center">
-                                  <a href="{{route('follow.user',['id'=>$user->id()])}}" class="get-started-btn">Follow</a>
-                              </div>
+                                @if ($project->data()['userId']!=Session::get('uid'))
+                                    
+                                @foreach ($follows as $follow)
+                              
+                          @if ($follow->data()['following']==$user->id())
+                            <div class="trainer-rank d-flex align-items-center">
+                              <a href="{{route('follow.user',['id'=>$user->id()])}}" class="get-started-btn">Followed</a>
+                            </div>
+                          @else
+                          
+                          <div class="trainer-rank d-flex align-items-center">
+                              <a href="{{route('follow.user',['id'=>$user->id()])}}" class="get-started-btn">Follow</a>
+                          </div>
+                          @endif
+                          @break
+                          @endforeach
+                                @endif
                             @break
                             @endif {{--condition if --}}
                             @endforeach
@@ -69,7 +85,9 @@
                   
                   @endif
               @endforeach  
-    
+              @else
+              <h4>No project yet</h4>
+              @endif
               {{-- <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-lg-0">
                 <div class="course-item">
                     <img src="assets/img/course-3.jpg" class="img-fluid" alt="...">

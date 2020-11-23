@@ -2,7 +2,7 @@
 @section('nav')
             <li ><a href="/">Home</a></li>
           <li ><a href="{{route('projects')}}">Projects</a></li>
-          <li><a href="{{route('following')}}">Following</a></li>
+          <li><a href="{{route('show.followings')}}">Following</a></li>
           <li><a href="{{route('add_project')}}">Add Project</a></li>
     
 @endsection()
@@ -131,9 +131,7 @@
                                     @endif
                                 @endforeach
                                       <ul class="media-date text-uppercase reviews list-inline">
-                                        <li class="dd">22</li>
-                                        <li class="mm">09</li>
-                                        <li class="aaaa">2014</li>
+                                        <li>{{explode('.', $comment->data()['timestamp'], 2)[0]}}</li>
                                       </ul>
                                       <h4 class="media-comment">
                                         {{$comment->data()['comment']}}
