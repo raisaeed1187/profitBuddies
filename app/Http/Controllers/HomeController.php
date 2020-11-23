@@ -54,9 +54,12 @@ class HomeController extends Controller
 					
 			array_push($users,$usr);
 		}
+		$follows = $this->db->collection('Followers')->where('followedBy','==', Session::get('uid'))->documents();							
 		$projects = $res['hits'];
 		return view('search-result')->with('projects',$projects)
-							   ->with('users',$users);
+							   ->with('users',$users)
+							   ->with('follows',$follows);
+							   
 
 		
 		} else {

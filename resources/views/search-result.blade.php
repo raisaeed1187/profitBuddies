@@ -49,10 +49,21 @@
                         </span>
                         </div>
                         @if ($project['_highlightResult']['userId']['value']!= Session::get('uid'))
-                            
-                        <div class="trainer-rank d-flex align-items-center">
-                            <a href="{{route('follow.user',['id'=>$user->id()])}}" class="get-started-btn">Follow</a>
-                        </div>
+                        @foreach ($follows as $follow)
+                              
+                          @if ($follow->data()['following']==$user->id())
+                            <div class="trainer-rank d-flex align-items-center">
+                              <a href="{{route('follow.user',['id'=>$user->id()])}}" class="get-started-btn">Followed</a>
+                            </div>
+                          @else
+                          
+                          <div class="trainer-rank d-flex align-items-center">
+                              <a href="{{route('follow.user',['id'=>$user->id()])}}" class="get-started-btn">Follow</a>
+                          </div>
+                          @endif
+                          @break
+                          @endforeach    
+                        
                         @endif
                         @break
                       @endif {{--condition if --}}
