@@ -41,7 +41,7 @@
                       @foreach ($users as $user)
                       @if ($project['_highlightResult']['userId']['value'] == $user->id())
                         <img src="{{$user->data()['profilePictureURL']}}" class="img-fluid" alt="">
-                        <span>
+                        <span> 
                           
                           {{$user->data()['firstName']}} {{$user->data()['lastName']}}
                           

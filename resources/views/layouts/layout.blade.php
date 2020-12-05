@@ -51,11 +51,13 @@
         
     </div>
     <div class="social-links text-center text-md-right pt-3 pt-md-0">
-        <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
-        <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
-        <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+      <strong><span>Also on</span></strong>
+        <a href="#" class="android"><i class="bx bxl-android"></i></a>
+        <strong><span>and</span></strong>
+        <a href="#" class="apple"><i class="bx bxl-apple"></i></a>
+        {{-- <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
         <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
-        <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+        <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a> --}}
     </div>
     
    </div>
@@ -96,11 +98,19 @@
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
 
   <script>
-    // Swal.fire("slam");
+    
+    
+    
     @if(Session::has('success'))
                 
-          Swal.fire("{{Session::get('success')}}");
+          Swal.fire({
+            title:"{{Session::get('success')}}",
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3ac162',
+          });
+
      @endif
+
 
     //  Swal.fire('Any fool can use a computer');
 
@@ -110,15 +120,87 @@
       $(this).addClass('active');
     });
   </script>
+
+
+
+<script>
+  $(".search-btn").click(function(){
+    $(".wrapper").addClass("active");
+    $(this).css("display", "none");
+    $(".search-data").fadeIn(500);
+    $(".close-btn").fadeIn(500);
+    $(".search-data .line").addClass("active");
+    setTimeout(function(){
+      $("input").focus();
+      $(".search-data label").fadeIn(500);
+      $(".search-data span").fadeIn(500);
+    }, 800);
+  });
+  $(".close-btn").click(function(){
+    $(".wrapper").removeClass("active");
+    $(".search-btn").fadeIn(800);
+    $(".search-data").fadeOut(500);
+    $(".close-btn").fadeOut(500);
+    $(".search-data .line").removeClass("active");
+    $("input").val("");
+    $(".search-data label").fadeOut(500);
+    $(".search-data span").fadeOut(500);
+  });
+</script>
+
   <script>
     $(document).ready(function() {
-     
+      // Swal.fire({
+      //   title:"Here's a title!",
+      //   confirmButtonText: 'OK',
+      //   confirmButtonColor: '#3ac162',
+      // });
+      // alert('document');
+      
+        //  $('.layout-content').click(function(){
+        //       return false;
+        //   });
+          $('.layout-content').click(function(e){
+            if($(e.srcElement).is(':submit'))
+                    return true;
+            else return false;
+          });
+
      $(".search").click(function() {
         $(".search-box").toggle();
         $("input[type='text']").focus();
       });
 
+      $(function () {
+    $('a[href="#search"]').on('click', function(event) {
+        event.preventDefault();
+        $('#search').addClass('open');
+        $('#search > form > input[type="search"]').focus();
+    });
+    
+    $('#search, #search button.close').on('click keyup', function(event) {
+        if (event.target == this || event.target.className == 'close' || event.keyCode == 27) {
+            $(this).removeClass('open');
+        }
+    }); 
+    
+    //Do not include! This prevents the form from submitting for DEMO purposes only!
+    $('form').submit(function(event) {
+        event.preventDefault();
+        return false;
+    })
+});  
   });
+  </script>
+  <script>
+    
+
+    function openSearch() {
+    document.getElementById("mylayout").style.display = "block";
+}
+function closeSearch() {
+    document.getElementById("mylayout").style.display = "none";
+}
   </script>
   <script>
     var modal = document.getElementById("modal");
@@ -144,6 +226,7 @@
     function toggleNav() {
         var e = document.getElementById("navigation");
         e.classList.toggle("active");
+        
     }
    
 </script>

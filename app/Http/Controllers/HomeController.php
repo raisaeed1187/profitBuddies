@@ -38,14 +38,19 @@ class HomeController extends Controller
 		// dd($request->search);
 		$users = array();
 		if ($request->search != null) {
-		
+			$this->index->setSettings([
+				'highlightPreTag' => ' ',
+				'highlightPostTag' => ' '
+		  ]);
 		$res = $this->index->search($request->search, [
 		'attributesToRetrieve' => [
 			'projecttype',
 		],
-		'hitsPerPage' => 50
+		'hitsPerPage' => 50,
+		'highlightPreTag' => ' ',
+		'highlightPostTag' => ' '
 		]);
-		// dd($res['hits']);
+		dd($res);
 		// dd($res['hits'][0]['_highlightResult']['picUrl']['value']);
 
 		foreach ($res['hits'] as $hit) {
@@ -302,6 +307,9 @@ class HomeController extends Controller
 		// dd($projects);
 		$users = array();
 		$followings = array();
+		$follows = $this->db->collection('Followers')->where('followedBy','==', Session::get('uid'))->documents();							
+			
+		
 		$projects = $this->db->collection('ProjectDetail')->orderBy('timestamp','desc')->documents();
 		
 			foreach($projects as $project) {
@@ -313,8 +321,25 @@ class HomeController extends Controller
 					
 				}
 			}
-			$follows = $this->db->collection('Followers')->where('followedBy','==', Session::get('uid'))->documents();							
+			$count=0;
+			// foreach ($users as $key => $user) {
+			// 	# code...
+			
+			// 	foreach ($follows as $follow) {
+			// 		# code...
+			// 		if ($follow->data()['following']==$user->id()) {
+			// 			print($user->data()['firstName']);
+			// 			print('/');
+			// 		}elseif($follow->data()['following']!=$user->id()){
+			// 			$count=$count+1;
+			// 			// continue;
+			// 		}
+			// 	break;
 
+			// 	}
+			// }
+			// print($count);
+			// dd($follows->size());
 			// foreach ($users as $user) {
 				
 				
@@ -518,7 +543,7 @@ class HomeController extends Controller
 			}
 		}
 		
-		Session::flash('success','your are follow this User');
+		Session::flash('success','your are following this User');
 		return redirect()->back();
 
 

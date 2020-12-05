@@ -166,6 +166,9 @@
                      
                       <div class="row">
                         <div class="col-sm-10 col-sm-offset-1">
+                          @if ($projects->size()>0)
+                              
+                          
                           @foreach ($projects as $project)
                               @if ($project->exists())
                                   
@@ -185,6 +188,7 @@
                               </div>
                               @endif
                           @endforeach
+                          @endif
                           {{-- <div class="col-sm-6">
                             <div class="course-item">
                               <img src="assets/img/course-2.jpg" class="img-fluid" alt="...">

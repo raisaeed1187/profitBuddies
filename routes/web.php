@@ -166,3 +166,5 @@ Route::get("/registration","RegistrationController@register");
 // Route::view("/registration","RegistrationController@register");
 
 Route::get('/contact','ContactController@contact');
+
+

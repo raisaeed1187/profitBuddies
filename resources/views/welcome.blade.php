@@ -191,6 +191,9 @@
         </section> --}}
         <!-- End Trainers Section -->
         
-        
+    <script>
+        // alert('slam');
+        Swal.fire("slam");
+    </script>    
     @endsection
  

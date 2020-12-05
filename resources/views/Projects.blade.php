@@ -50,19 +50,28 @@
                         </span>
                         </div>
                         @if ($project->data()['userId']!=Session::get('uid'))
-                          @foreach ($follows as $follow)
+                          @foreach ($follows as $key => $follow)
                               
                           @if ($follow->data()['following']==$user->id())
                             <div class="trainer-rank d-flex align-items-center">
-                              <a href="{{route('follow.user',['id'=>$user->id()])}}" class="get-started-btn">Followed</a>
+                              <span class="get-started-btn" id="{{$follow->data()['following']}}">Following</span>
                             </div>
+                            <script>
+                              // alert('slam');
+                            </script>
                           @else
-                          
                           <div class="trainer-rank d-flex align-items-center">
                               <a href="{{route('follow.user',['id'=>$user->id()])}}" class="get-started-btn">Follow</a>
+                              <script>
+                                // alert('slam');
+                              </script>
+                              
                           </div>
+                          
+                          
                           @endif
-                          @break
+                          
+                          
                           @endforeach
                           @endif
                         @break
