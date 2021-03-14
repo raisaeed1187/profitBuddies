@@ -36,8 +36,11 @@
                   @if ($project->exists())
                       
                   <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-                    <div class="course-item">
+                    <div class="course-item" style="position: relative">
                         <img src="{{$project->data()['picUrl'][0]}}" style="max-height: 300px;" class="img-fluid" alt="...">
+                        @if ($project->data()['isCompleted']=="1")
+                            <h4 class="badge-success rounded" style="padding: 5px;position: absolute; top:0px;right:5px">Completed</h4>
+                        @endif
                         <div class="course-content">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h4>{{$project->data()['location']}}</h4>

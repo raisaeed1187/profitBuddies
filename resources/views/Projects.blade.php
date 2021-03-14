@@ -25,11 +25,13 @@
         @if ($projects->size()>0)    
         @foreach ($projects as $project)
             @if ($project->exists())
-                
             <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-              <div class="course-item">
-                  <img src="{{$project->data()['picUrl'][0]}}" style="max-height: 300px;" class="img-fluid" alt="...">
-                  <div class="course-content">
+              <div class="course-item" style="position: relative">
+                <img src="{{$project->data()['picUrl'][0]}}" style="max-height: 300px;" class="img-fluid" alt="...">
+                @if ($project->data()['isCompleted']=="1")
+                  <h4 class="badge-success rounded" style="padding: 5px;position: absolute; top:0px;right:5px">Completed</h4>
+                @endif
+                <div class="course-content">
                   <div class="d-flex justify-content-between align-items-center mb-3">
                       <h4>{{$project->data()['location']}}</h4>
                       <p class="price">${{$project->data()['totalbudget']}}</p>
@@ -39,14 +41,12 @@
                   <p>{{$project->data()['projectdes']}}</p>
                   <div class="trainer d-flex justify-content-between align-items-center">
                       <div class="trainer-profile d-flex align-items-center">
-                      @foreach ($users as $user)
+                    @foreach ($users as $user)
                       @if ($project->data()['userId'] == $user->id())
                         <img src="{{$user->data()['profilePictureURL']}}" class="img-fluid" alt="">
                         <span>
-                          
                           {{$user->data()['firstName']}} {{$user->data()['lastName']}}
                           
-                            
                         </span>
                         </div>
                         @if ($project->data()['userId']!=Session::get('uid'))
@@ -56,9 +56,6 @@
                             <div class="trainer-rank d-flex align-items-center">
                               <span class="get-started-btn" id="{{$follow->data()['following']}}">Following</span>
                             </div>
-                            <script>
-                              // alert('slam');
-                            </script>
                           @else
                           <div class="trainer-rank d-flex align-items-center">
                               <a href="{{route('follow.user',['id'=>$user->id()])}}" class="get-started-btn">Follow</a>
@@ -76,9 +73,9 @@
                           @endif
                         @break
                       @endif {{--condition if --}}
-                      @endforeach
+                    @endforeach
                   </div>
-                  </div>
+                </div>
               </div>
             </div> <!-- End Course Item-->
             @endif

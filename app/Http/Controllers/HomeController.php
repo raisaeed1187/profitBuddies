@@ -10,15 +10,13 @@ use Kreait\Firebase\ServiceAccount;
 // use Kreait\Firebase\ServiceAccount;
 // use Kreait\Firebase\Database;
 use Session;
+use Carbon\Carbon;
 Use Alert;
 use Laravel\Scout\Searchable;
 
 
 class HomeController extends Controller
 {
-	
-	
-
 	protected $db;
 	protected $index;
     public function __construct() {
@@ -148,12 +146,12 @@ class HomeController extends Controller
 
 
 		return redirect('/signInForm');
-	} 
-	catch (\Kreait\Firebase\Exception\Auth\EmailExists $ex) {
-		Session::put('registerMsg','email already exists');
-		return redirect('signUpForm');
-	}
-}
+		} 
+		catch (\Kreait\Firebase\Exception\Auth\EmailExists $ex) {
+			Session::put('registerMsg','email already exists');
+			return redirect('signUpForm');
+		}
+    }				
 
 	//=----------------logout---------------
 
@@ -169,6 +167,7 @@ class HomeController extends Controller
 
 	//--------------Index------------
 	public function index(Request $request){
+		// dd(Carbon::createFromTimestamp('1607371987021')->format("F j, Y g:i a"));
 		// dd(Session::get('uid'));
 		// $student = app('firebase.firestore')->database()->collection('Student')->document('defT5uT7SDu9K5RFtIdl')->snapshot();
 
@@ -219,13 +218,7 @@ class HomeController extends Controller
 		// dd(Session::get('uid'));
 		if($projct->data()!=null){
 			$project=$projct;
-		
- 
-		$comments = $this->db->collection('comments')->where('postId','==',$project->id())->documents();
-
-		// $user = $this->db->collection('backend_users')->where('userID','==',$comments->data()['commentFrom'])->documents();
-		// dd($user);
-		// dd($comments);
+			$comments = $this->db->collection('comments')->where('postId','==',$project->id())->documents();
 
 			$users = array();
 
@@ -241,13 +234,7 @@ class HomeController extends Controller
 				}
 			}
 			
-			// dd($users);
-
-			// foreach($users as $user) {
-			// 	// print_r($user);
-            //     dd($user[0]);
-          	  
-			// }
+			
 		return view('project')->with('project',$project)
 							  ->with('comments',$comments)
 							  ->with('users',$users);
@@ -363,6 +350,7 @@ class HomeController extends Controller
 	}
 
 	public function storeProject(Request $request){
+		dd($request->all());
 		$timestamp = (int) round(now()->format('Uu') / pow(10, 6 - 3));
 		// dd($timestamp);
 		// dd($request->all());
@@ -404,11 +392,12 @@ class HomeController extends Controller
 			'contact'=>$request->email,
 			'currency'=>$request->currency,
 			'location'=>$request->country,
-			'picUrl'=>$imageLink,
+			'picUrl'=>$allImageLinks,
 			'postId'=>$timestamp,
 			'projectdes'=>$request->description,
 			'projectstatus'=>"active",
 			'projecttype'=>$request->title,
+			'isCompleted'=>'0',
 			'remainbudget'=>$request->remainingbudget,
 			'reportedBy'=>$reportedBy,
 			'totalbudget'=>$request->totalbudget,
@@ -434,7 +423,7 @@ class HomeController extends Controller
 				'totalbudget'=>$project->data()['totalbudget'],
 				'userId'=>$project->data()['userId'],
 				'timestamp'=>$project->data()['timestamp'],
-			  ],
+			  ]
 			);
 	  //	// $this->index->saveObjects(
 		// 	  [
@@ -462,6 +451,135 @@ class HomeController extends Controller
 
 		return redirect()->back();
 
+	}
+	public function deleteProject($id){
+		$this->db->collection('ProjectDetail')->document($id)->delete();
+        Alert::success('Deleted Successfully', 'Success Message');
+        return redirect()->back();
+        
+	}
+	public function editProject(Request $request, $id){
+		if ($request->isMethod('post')) {
+			// dd($request->all());
+			$timestamp = (int) round(now()->format('Uu') / pow(10, 6 - 3));
+			// dd($timestamp);
+			// dd($request->all());
+			$imageLink =array();
+			$reportedBy = array();
+			$images= $request->image;
+			$allImageLinks = array();
+			foreach ($request->oldImages as $value) {
+				# code...
+				array_push($allImageLinks,$value);
+			}
+			// dd($allImageLinks);
+			$id = Session::get('uid');
+			$projct = app('firebase.firestore')->database()->collection('ProjectDetail')->document($id);
+			
+			if (!empty($images)) {
+				foreach ($images as  $image) {
+					if (!empty($image)) {
+					
+					$name = rand();
+					// $firebase_storage_path = '';
+					$localfolder = public_path('firebase-temp-uploads') .'/';
+					$extension  = $image->getClientOriginalExtension();
+					$file = $name. '.' . $extension;  
+					if ($image->move($localfolder, $file)) {
+						$uploadedfile = fopen($localfolder.$file, 'r');
+						$uploadedObject = app('firebase.storage')->getBucket()->upload($uploadedfile, ['name' => $file]);
+							//will remove from local laravel folder
+						unlink($localfolder . $file);
+							// echo('success');
+					} else {
+							echo 'error';
+					}
+					$expiresAt = new \DateTime('2099-12-12');
+					$imageLnk = $uploadedObject->signedUrl($expiresAt).PHP_EOL;
+					array_push($imageLink,$imageLnk);
+					array_push($allImageLinks,$imageLnk);
+					}
+				}
+			}
+			
+			 $date = new \Google\Cloud\Core\Timestamp(new \DateTime('now'));
+			//  dd($date->formatAsString()); 
+			dd($allImageLinks);
+	
+			$projct =$this->db->collection('ProjectDetail')->document($id);
+			$projct->set([
+				'contact'=>$request->email,
+				'currency'=>$request->currency,
+				'location'=>$request->country,
+				'picUrl'=>$imageLink,
+				'postId'=>$timestamp,
+				'projectdes'=>$request->description,
+				'projectstatus'=>"active",
+				'projecttype'=>$request->title,
+				'remainbudget'=>$request->remainingbudget,
+				'reportedBy'=>$reportedBy,
+				'isCompleted'=>'0',
+				'totalbudget'=>$request->totalbudget,
+				'userId'=>$id,
+				'timestamp'=>$date,
+	
+			]);
+			$project = $this->db->collection('ProjectDetail')->document($projct->id())->snapshot();
+			// dd($project->id());
+			$this->index->saveObject(
+				[
+					'objectID' => $project->id(),
+					'contact'=>$project->data()['contact'],
+					'currency'=>$project->data()['currency'],
+					'location'=>$project->data()['location'],
+					'picUrl'=>$project->data()['picUrl'],
+					'postId'=>$project->data()['postId'],
+					'projectdes'=>$project->data()['projectdes'],
+					'projectstatus'=>$project->data()['projectstatus'],
+					'projecttype'=>$project->data()['projecttype'],
+					'remainbudget'=>$project->data()['remainbudget'],
+					'reportedBy'=>$project->data()['reportedBy'],
+					'totalbudget'=>$project->data()['totalbudget'],
+					'userId'=>$project->data()['userId'],
+					'timestamp'=>$project->data()['timestamp'],
+				  ]
+				);
+	
+			Session::flash('success','New Project Added');
+	
+			return redirect()->back();
+	
+		}
+		$project= $this->db->collection('ProjectDetail')->document($id)->snapshot();
+        
+        return view('editProject')->with('project',$project);
+		
+	}
+
+	public function isCompleted($id){
+			$project = $this->db->collection('ProjectDetail')->document($id)->snapshot();
+			// dd($project->id());
+			$projct =$this->db->collection('ProjectDetail')->document($id);
+			$projct->set(
+				[
+					'contact'=>$project->data()['contact'],
+					'currency'=>$project->data()['currency'],
+					'location'=>$project->data()['location'],
+					'picUrl'=>$project->data()['picUrl'],
+					'postId'=>$project->data()['postId'],
+					'projectdes'=>$project->data()['projectdes'],
+					'projectstatus'=>$project->data()['projectstatus'],
+					'projecttype'=>$project->data()['projecttype'],
+					'remainbudget'=>$project->data()['remainbudget'],
+					'reportedBy'=>$project->data()['reportedBy'],
+					'isCompleted'=>'1',
+					'totalbudget'=>$project->data()['totalbudget'],
+					'userId'=>$project->data()['userId'],
+					'timestamp'=>$project->data()['timestamp'],
+				  ]
+				);
+				return redirect()->back();
+			
 	}
 
 	//-------------------following-----------

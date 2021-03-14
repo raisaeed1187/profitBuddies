@@ -108,7 +108,15 @@ Route::group(['middleware'=>'firebase'],function(){
         'uses' => 'HomeController@storeProject',
         'as'=>'store.project'
     ]);
-    
+    Route::get('/delete_project/{id}',[
+        'uses' => 'HomeController@deleteProject',
+        'as'=>'delete_project'
+    ]);
+    Route::match(['get','post'],'/edit_project/{id}','HomeController@editProject')->name('edit_project');
+    Route::get('/isCompleted/{id}',[
+        'uses' => 'HomeController@isCompleted',
+        'as'=>'isCompleted'
+    ]);
     
     Route::get('/userInfo',[
         'uses' => 'UsersController@index',

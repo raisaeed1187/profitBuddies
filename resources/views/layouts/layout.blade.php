@@ -8,26 +8,26 @@
 
     <!-- Favicons -->
   {{-- <link href="assets/img/favicon.png" rel="icon"> --}}
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="{{asset('assets/img/apple-touch-icon.png')}}" rel="apple-touch-icon">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
-  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-  <link href="assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
-  <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{asset('assets/vendor/icofont/icofont.min.css')}}" rel="stylesheet">
+  <link href="{{asset('assets/vendor/boxicons/css/boxicons.min.css')}}" rel="stylesheet">
+  <link href="{{asset('assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
+  <link href="{{asset('assets/vendor/owl.carousel/assets/owl.carousel.min.css')}}" rel="stylesheet">
+  <link href="{{asset('assets/vendor/animate.css/animate.min.css')}}" rel="stylesheet">
+  <link href="{{asset('assets/vendor/aos/aos.css')}}" rel="stylesheet">
 
   <!-- Template Main CSS File --> 
-  <link href="assets/css/style.css" rel="stylesheet">
-  <link href="css/form.css" rel="stylesheet">
+  <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
+  <link href="{{asset('css/form.css')}}" rel="stylesheet">
   
   {{-- comment style --}}
-  <link href="css/comment.css" rel="stylesheet">
+  <link href="{{asset('css/comment.css')}}" rel="stylesheet">
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">         
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -76,24 +76,24 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
     <!-- Vendor JS Files -->
-  <script src="assets/vendor/jquery/jquery.min.js"></script>
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/jquery.easing/jquery.easing.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-  <script src="assets/vendor/waypoints/jquery.waypoints.min.js"></script>
-  <script src="assets/vendor/counterup/counterup.min.js"></script>
-  <script src="assets/vendor/owl.carousel/owl.carousel.min.js"></script>
-  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="{{asset('assets/vendor/jquery/jquery.min.js')}}"></script>
+  <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{asset('assets/vendor/jquery.easing/jquery.easing.min.js')}}"></script>
+  <script src="{{asset('assets/vendor/php-email-form/validate.js')}}"></script>
+  <script src="{{asset('assets/vendor/waypoints/jquery.waypoints.min.js')}}"></script>
+  <script src="{{asset('assets/vendor/counterup/counterup.min.js')}}"></script>
+  <script src="{{asset('assets/vendor/owl.carousel/owl.carousel.min.js')}}"></script>
+  <script src="{{asset('assets/vendor/aos/aos.js')}}"></script>
 
   <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
+  <script src="{{asset('assets/js/main.js')}}"></script>
   
   {{-- comment script --}}
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   {{-- -----sweetalert--------- --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script src="sweetalert2.all.min.js"></script>
+    <script src="{{asset('sweetalert2.all.min.js')}}"></script>
     <!-- Optional: include a polyfill for ES6 Promises for IE11 -->
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
 
@@ -146,6 +146,52 @@
     $(".search-data label").fadeOut(500);
     $(".search-data span").fadeOut(500);
   });
+  $("#completeBt").click(function(){
+    alert('slam');
+            var _self = $(this);
+            var id = _self.attr('rel');
+            var userId = _self.data("user");
+            var product_name = _self.data("product");
+            var link = _self.data("link");
+            var retailer = _self.data("retailer");
+            var price = _self.data("price");
+
+            console.log("id: "+id +' user id =>'+userId+ " product: "+product_name+" link: "+link +" retailer: "+retailer+" price: "+price);
+            if($(this).prop("checked")==true){
+               $.ajax({
+                  headers: {
+                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                  },
+                  type : 'post',
+                  url : '/admin/update-status',
+                  data : {status:1,id:id,user_id:userId,product_name:product_name,link:link,retailer:retailer,price:price}, 
+                  success:function(data){
+                     $("#message_success").show();
+                     setTimeout(function() { $("#message_success").fadeOut('slow'); }, 2000);
+                  },error:function(){
+                     alert("Error");
+                  }
+               });
+  
+            }else{
+              $.ajax({
+                  headers: {
+                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                  },
+                  type : 'post',
+                  url : '/admin/update-status',
+                  data : {status:0,id:id,user_id:userId,product_name:product_name,link:link,retailer:retailer,price:price},
+                  success:function(resp){
+                     $("#message_error").show();
+                     setTimeout(function() { $("#message_error").fadeOut('slow'); }, 2000);
+                  },error:function(){
+                     alert("Error");
+                  }
+               });
+            }
+           });
+         //Update Product Status
+         
 </script>
 
   <script>

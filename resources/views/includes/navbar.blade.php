@@ -63,7 +63,7 @@
       <div id="mylayout" class="layout">
         <span class="layoutclosebtn" onclick="closeSearch()" title="Close layout">×</span>
         <div class="layout-content">
-          <a href="{{route('home')}}">Test it</a>
+          <a href="{{route('home')}}"></a>
           <form action="http://nicesnippets.com" target="_blank">
               <input type="text" placeholder="Search.." name="search">
               <button type="submit" class="searchBtn"><i class="fa fa-search "></i></button>

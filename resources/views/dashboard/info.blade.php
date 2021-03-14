@@ -173,8 +173,13 @@
                               @if ($project->exists())
                                   
                               <div class="col-sm-6" >
-                                <div class="course-item">
-                                  <img src="{{$project->data()['picUrl'][0]}}" class="img-fluid" alt="...">
+                                <div class="course-item" style="position: relative">
+                                  <img src="{{$project->data()['picUrl'][0]}}"  class="img-fluid" alt="..." width="250px" height="150px">
+                                  @if ($project->data()['isCompleted']=="1")
+                                      
+                                  <h4 class="badge-success rounded" style="padding: 5px;position: absolute; top:0px;right:5px">Completed</h4>
+                                  @endif
+                                  
                                   <div class="course-content">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                       <h4 class="badge-success rounded" style="padding: 3px;">{{$project->data()['location']}}</h4>
@@ -182,7 +187,31 @@
                                     </div>
                                     <h4><a href="{{$project->id()}}">{{$project->data()['projecttype']}}</a></h4>
                                     <p>{{$project->data()['projectdes']}}</p>
-                                    
+                                    <hr>
+                                        {{-- <p>Edit project</p> --}}
+                                          
+                                           {{-- <td>
+                                            <a href="#" class="btn btn-add btn-sm" title="Add Affiliate Link"><i class="fa fa-plus"></i></button>
+                                            <a href="#" class="btn btn-danger btn-sm" title="Delete Mobile"><i class="fa fa-trash-o"></i> </button>
+                                          </td> --}}
+                                           <div class="row">
+                                            @if ($project->data()['isCompleted']=="0")
+                                            <div class="col-md-3">
+                                              <a href="{{route('edit_project',['id'=>$project->id()])}}" class="btn btn-info btn-sm">Edit <i class="fa fa-pencil-square-o"></i> </a>
+                                              {{-- <a href="#" class="btn btn-info btn-sm">Edit <i class="fa fa-pencil-square-o"></i> </a> --}}
+                                            
+                                            </div>
+                                            @endif
+                                            <div class="col-md-4">
+                                              <a href="{{route('delete_project',['id'=>$project->id()])}}" class="btn btn-danger btn-sm" >Delete <i class="fa fa-trash-o"></i></a>
+                                            </div>
+                                            @if ($project->data()['isCompleted']=="0")
+                                              <div class="col-md-4">
+                                                <a href="{{route('isCompleted',['id'=>$project->id()])}}" class="btn btn-success btn-sm" id="completeBtn">Complete <i class="fa fa-check-circle"></i> </a>
+                                              </div>
+                                            @endif
+                                          </div>
+                                      
                                   </div>
                                 </div>
                               </div>

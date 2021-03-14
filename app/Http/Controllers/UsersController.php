@@ -36,7 +36,7 @@ class UsersController extends Controller
         //   	  }
       // }
 
-      $projects = $this->db->collection('ProjectDetail')->where('userId','==',$id)->documents();
+      $projects = $this->db->collection('ProjectDetail')->where('userId','==',$id)->orderBy('timestamp','desc')->documents();
     //   $projects
         $followings = $this->db->collection('Followers')->where('followedBy','==',$id)->documents();
         $followers = $this->db->collection('Followers')->where('following','==',$id)->documents();
